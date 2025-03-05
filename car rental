@@ -1,0 +1,34 @@
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+
+cars = [
+    {"id": 1, "model": "Toyota Corolla", "status": "Available"},
+    {"id": 2, "model": "Honda Civic", "status": "Available"},
+    {"id": 3, "model": "Ford Focus", "status": "Available"},
+    {"id": 4, "model": "Kia sonate", "status": "Available"},
+]
+
+@app.route('/')
+def index():
+    return render_template('index.html', cars=cars)
+
+@app.route('/rent/<int:car_id>')
+def rent_car(car_id):
+    for car in cars:
+        if car["id"] == car_id and car["status"] == "Available":
+            car["status"] = "Rented"
+            break
+    return redirect(url_for('index'))
+
+@app.route('/return/<int:car_id>')
+def return_car(car_id):
+    for car in cars:
+        if car["id"] == car_id and car["status"] == "Rented":
+            car["status"] = "Available"
+            break
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
